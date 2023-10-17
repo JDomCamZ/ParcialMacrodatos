@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="SteamGames">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/dist/SteamGames.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

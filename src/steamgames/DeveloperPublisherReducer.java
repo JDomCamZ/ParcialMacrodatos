@@ -38,15 +38,20 @@ public class DeveloperPublisherReducer extends MapReduceBase implements Reducer<
             }
         }
 
-        if (count > 0) {
+        if (count > 2) {
             double averageMetacritic = metacriticSum / count;
             double averagePrice = priceSum / count;
-            String outputValue = "Avg Metacritic: " + averageMetacritic +
-                                "\tAvg Price: " + averagePrice +
-                                "\tTotal Sales: " + totalSales +
-                                "\tAvg DLCs: " + (dlcSum / count);
 
-            output.collect(key, new Text(outputValue));
+            if (averageMetacritic > 0) {
+                String metacriticFormatted = String.format("%.1f", averageMetacritic);
+                String priceFormatted = String.format("$%.2f", averagePrice);
+                String outputValue = "Avg Metacritic: " + metacriticFormatted +
+                        "\tAvg Price: " + priceFormatted +
+                        "\tTotal Sales: " + totalSales +
+                        "\tAvg DLCs: " + String.format("%.1f", dlcSum / count);
+
+                output.collect(key, new Text(outputValue));
+            }
         }
     }
 }

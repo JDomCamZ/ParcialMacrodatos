@@ -32,7 +32,7 @@ public class SteamGames {
                 priceanal(args[1], args[2]);
                 break;
             case "dev":
-                devanalysis(args[1], args[2], args[3]);
+                devanalysis(args[1], args[2]);
                 break;
  /*           case "minmax":
                 // Lógica para la segunda consulta
@@ -117,7 +117,7 @@ public class SteamGames {
         }
     }
     
-    static void devanalysis(String input, String output, String score) {
+    static void devanalysis(String input, String output) {
         JobClient my_client = new JobClient();
         // Create a configuration object for the job
         JobConf job_conf = new JobConf(SteamGames.class);

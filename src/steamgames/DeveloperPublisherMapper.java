@@ -61,20 +61,40 @@ public class DeveloperPublisherMapper extends MapReduceBase implements Mapper<Lo
             String priceString = parts[6].trim();
             if (!priceString.equals("Price")) {
                 try {
-                    String developer = parts[24].trim();
-                    String publisher = parts[25].trim();
-                    double metacritic = Double.parseDouble(parts[13].trim());
+                    String metacritic = parts[13].trim();
+                    
+                    // Parse Metacritic score and filter out games with a score of 0
+                    double metacriticScore = Double.parseDouble(metacritic);
+                    if (metacriticScore == 0) {
+                        return; // Skip games with a Metacritic score of 0
+                    }
                     double priceValue = Double.parseDouble(priceString);
                     int sales = parseSales(parts[3].trim());
                     double numDLCs = Double.parseDouble(parts[7].trim());
-                    gameInfo.set(metacritic + "\t" + priceValue  + "\t" + sales + "\t" + numDLCs);
-                     // Emitir desarrollador
-                    company.set("Developer: " + developer);
-                    output.collect(company, gameInfo);
+                    String[] developers = parts[24].split(",");
+                    for (String developer : developers) {
+                        developer = developer.trim();
+                        if (!developer.isEmpty()) {
+                            String gameInfoValue = metacritic + "\t" + priceValue + "\t" + sales + "\t" + numDLCs;
+                            gameInfo.set(gameInfoValue);
+
+                            // Emit developer
+                            output.collect(new Text("Developer: " + developer), gameInfo);
+                        }
+                    }
                     
                     // Emitir publisher
-                    company.set("Publisher: " + publisher);
-                    output.collect(company, gameInfo);
+                    String[] publishers = parts[25].split(",");
+                    for (String publisher : publishers) {
+                        publisher = publisher.trim();
+                        if (!publisher.isEmpty()) {
+                            String gameInfoValue = metacritic + "\t" + priceValue + "\t" + sales + "\t" + numDLCs;
+                            gameInfo.set(gameInfoValue);
+
+                            // Emit publisher
+                            output.collect(new Text("Publisher: " + publisher), gameInfo);
+                        }
+                    }
                 } catch (NumberFormatException e) {
                     // Handle any parsing errors if the "price" column doesn't contain a valid double.
                     // You can log an error or take other appropriate actions.

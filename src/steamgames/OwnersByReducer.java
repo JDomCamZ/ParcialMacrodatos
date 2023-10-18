@@ -15,7 +15,7 @@ import org.apache.hadoop.mapred.*;
  *
  * @author Miguel Huamani <miguel.huamani.r@uni.pe>
  */
-public class SalesGenreReducer  extends MapReduceBase implements Reducer<Text, Text, Text, Text> {
+public class OwnersByReducer  extends MapReduceBase implements Reducer<Text, Text, Text, Text> {
 
     
     public void reduce(Text key, Iterator<Text> values, OutputCollector<Text, Text> output, Reporter reporter) throws IOException {

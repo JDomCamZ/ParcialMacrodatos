@@ -34,12 +34,19 @@ public class SteamGames {
             case "dev":
                 devanalysis(args[1], args[2]);
                 break;
-            case "dates":
-                datebigmap(args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
-                break;
-            case "test":
-                test(args[1], args[2]);
-                break;
+             case "dates":
+                 datebigmap(args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+                 break;
+             case "test":
+                 test(args[1], args[2]);
+                 break;
+             case "genre":
+                 // Lógica para la segunda consulta
+                 SalesGenre(args[0], args[1]);
+                 break;
+             case "os":
+                 Availability(args[0], args[1]);
+                 break;
  /*           case "minmax":
                 // Lógica para la segunda consulta
                 MinMax(args[0], args[1]);
@@ -122,7 +129,7 @@ public class SteamGames {
             e.printStackTrace();
         }
     }
-    
+
     static void devanalysis(String input, String output) {
         JobClient my_client = new JobClient();
         // Create a configuration object for the job
@@ -157,8 +164,8 @@ public class SteamGames {
             e.printStackTrace();
         }
     }
-    
-    
+
+
     static void datebigmap(String input, String output, String output2, String output3, String fechainit, String fechafin, String owners) {
         JobClient my_client = new JobClient();
         // Create a configuration object for the job
@@ -194,7 +201,7 @@ public class SteamGames {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         JobClient my_client2 = new JobClient();
         // Create a configuration object for the job
         JobConf job_conf2 = new JobConf(SteamGames.class);
@@ -228,7 +235,7 @@ public class SteamGames {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         JobClient my_client3 = new JobClient();
         // Create a configuration object for the job
         JobConf job_conf3 = new JobConf(SteamGames.class);
@@ -262,7 +269,7 @@ public class SteamGames {
             e.printStackTrace();
         }
     }
-    
+
     static void test(String input, String output) {
         JobClient my_client = new JobClient();
         // Create a configuration object for the job
@@ -278,6 +285,108 @@ public class SteamGames {
         // Specify names of Mapper and Reducer Class
         job_conf.setMapperClass(steamgames.TestMapper.class);
         job_conf.setReducerClass(steamgames.TestReducer.class);
+
+        // Specify formats of the data type of Input and output
+        job_conf.setInputFormat(TextInputFormat.class);
+        job_conf.setOutputFormat(TextOutputFormat.class);
+
+        // Set input and output directories using command line arguments,
+        //arg[0] = name of input directory on HDFS, and arg[1] =  name of output directory to be created to store the output file.
+
+        FileInputFormat.setInputPaths(job_conf, new Path(input));
+        FileOutputFormat.setOutputPath(job_conf, new Path(output));
+
+        my_client.setConf(job_conf);
+        try {
+            // Run the job
+            JobClient.runJob(job_conf);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    static void Availability(String input, String output) {
+        JobClient my_client = new JobClient();
+        // Create a configuration object for the job
+        JobConf job_conf = new JobConf(SteamGames.class);
+
+        // Set a name of the Job
+        job_conf.setJobName("Availability");
+
+        // Specify data type of output key and value
+        job_conf.setOutputKeyClass(Text.class);
+        job_conf.setOutputValueClass(Text.class);
+
+        // Specify names of Mapper and Reducer Class
+        job_conf.setMapperClass(steamgames.OSAvailabilityMapper.class);
+        job_conf.setReducerClass(steamgames.OSAvailabilityReducer.class);
+
+        // Specify formats of the data type of Input and output
+        job_conf.setInputFormat(TextInputFormat.class);
+        job_conf.setOutputFormat(TextOutputFormat.class);
+
+        // Set input and output directories using command line arguments,
+        //arg[0] = name of input directory on HDFS, and arg[1] =  name of output directory to be created to store the output file.
+
+        FileInputFormat.setInputPaths(job_conf, new Path(input));
+        FileOutputFormat.setOutputPath(job_conf, new Path(output));
+
+        my_client.setConf(job_conf);
+        try {
+            // Run the job
+            JobClient.runJob(job_conf);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    static void SalesGenre(String input, String output) {
+        JobClient my_client = new JobClient();
+        // Create a configuration object for the job
+        JobConf job_conf = new JobConf(SteamGames.class);
+
+        // Set a name of the Job
+        job_conf.setJobName("SalesGenre");
+
+        // Specify data type of output key and value
+        job_conf.setOutputKeyClass(Text.class);
+        job_conf.setOutputValueClass(Text.class);
+
+        // Specify names of Mapper and Reducer Class
+        job_conf.setMapperClass(steamgames.OwnersByGenreMapper.class);
+        job_conf.setReducerClass(steamgames.OwnersByGenreReducer.class);
+
+        // Specify formats of the data type of Input and output
+        job_conf.setInputFormat(TextInputFormat.class);
+        job_conf.setOutputFormat(TextOutputFormat.class);
+
+        // Set input and output directories using command line arguments,
+        //arg[0] = name of input directory on HDFS, and arg[1] =  name of output directory to be created to store the output file.
+
+        FileInputFormat.setInputPaths(job_conf, new Path(input));
+        FileOutputFormat.setOutputPath(job_conf, new Path(output));
+
+        my_client.setConf(job_conf);
+        try {
+            // Run the job
+            JobClient.runJob(job_conf);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    static void PublisherForDeveloperSales(String input, String output) {
+        JobClient my_client = new JobClient();
+        // Create a configuration object for the job
+        JobConf job_conf = new JobConf(SteamGames.class);
+
+        // Set a name of the Job
+        job_conf.setJobName("SalesGenre");
+
+        // Specify data type of output key and value
+        job_conf.setOutputKeyClass(Text.class);
+        job_conf.setOutputValueClass(Text.class);
+
+        // Specify names of Mapper and Reducer Class
+        job_conf.setMapperClass(steamgames.OwnersByGenreMapper.class);
+        job_conf.setReducerClass(steamgames.OwnersByGenreReducer.class);
 
         // Specify formats of the data type of Input and output
         job_conf.setInputFormat(TextInputFormat.class);

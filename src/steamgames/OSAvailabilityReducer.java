@@ -38,9 +38,9 @@ public class OSAvailabilityReducer extends MapReduceBase implements Reducer<Text
             if (Mac) availabilityMac+=1;
  
         }
-            float windowPorcent=availabilityWindow/total;
-            float linuxPorcent=availabilityLinux/total;
-            float macPorcent=availabilityMac/total;
+            float windowPorcent=(float)availabilityWindow/total;
+            float linuxPorcent=(float)availabilityLinux/total;
+            float macPorcent=(float)availabilityMac/total;
             output.collect(new Text("WINDOWS"), new Text("jusgos disponibles: "+availabilityWindow+"  porcentaje:"+windowPorcent));
             output.collect(new Text("LINUX"), new Text("jusgos disponibles: "+availabilityLinux+"  porcentaje:"+linuxPorcent));
             output.collect(new Text("WINDOWS"), new Text("jusgos disponibles: "+availabilityMac+"  porcentaje:"+macPorcent));

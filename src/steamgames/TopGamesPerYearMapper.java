@@ -56,10 +56,10 @@ public class TopGamesPerYearMapper extends MapReduceBase implements Mapper<LongW
             if (fields.length >= 24) {
             int year = getYearFromDate(fields[2]); // Obtén el año
             String name=fields[1];
-            String Score=fields[14];
+            String Score=fields[13];
             String owner=fields[3];
             String price=fields[6];
-            String gener=fields[29];
+            String gener=fields[27];
             String gameInfo = name + "," + Score + "," + owner + "," + price + "," + gener;
             // Emite (año, información del juego)
             if(year>0 && !name.equals("Name"))output.collect(new Text(""+year), new Text(gameInfo));

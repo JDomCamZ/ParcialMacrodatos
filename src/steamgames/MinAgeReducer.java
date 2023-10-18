@@ -12,7 +12,7 @@ import org.apache.hadoop.mapred.*;
 public class MinAgeReducer extends MapReduceBase implements Reducer<Text, Text, Text, Text> {
     @Override
     public void reduce(Text key, Iterator<Text> values, OutputCollector<Text, Text> output, Reporter reporter) throws IOException {
-        double totalSales = 0;
+        int totalSales = 0;
         double totalPlayTime = 0;
         double totalMetacriticScore = 0;
         int count = 0;

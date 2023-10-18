@@ -74,7 +74,7 @@ public class OwnersByGenreMapper extends MapReduceBase implements Mapper<LongWri
 
             // Emit each genre along with the game name and estimated owners
             for (String genre : genreList) {
-                output.collect(new Text(genre), new Text(gameName + "," + estimatedOwners));
+                if(!gameName.equals("Name"))output.collect(new Text(genre), new Text(gameName + "," + estimatedOwners));
             }
                
             } catch (NumberFormatException e) {

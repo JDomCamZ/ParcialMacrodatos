@@ -52,7 +52,7 @@ public class OSAvailabilityMapper extends MapReduceBase implements Mapper<LongWr
 
             // Emit each genre along with the game name and estimated owners
             
-            output.collect(new Text("all"), new Text(Windows+","+Mac+","+Linuex));
+            if(!fields[1].equals("Name"))output.collect(new Text("all"), new Text(Windows+","+Mac+","+Linuex));
                
             } catch (NumberFormatException e) {
                 // Manejar el caso en el que no se pueda convertir a un número (puedes ignorarlo o registrar un error)

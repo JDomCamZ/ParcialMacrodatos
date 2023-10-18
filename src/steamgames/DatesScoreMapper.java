@@ -8,10 +8,22 @@ package steamgames;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapred.*;
-public class DeveloperPublisherMapper extends MapReduceBase implements Mapper<LongWritable, Text, Text, Text> {
-    private final Text gameInfo = new Text();
+
+public class DatesScoreMapper extends MapReduceBase implements Mapper<LongWritable, Text, Text, Text> {
+    String fechainit, fechafin; 
+
+    @Override
+    public void configure(JobConf job) {
+        // Recuperar los valores configurados en el método main
+        fechainit = job.get("fechaInicio");
+        fechafin = job.get("fechaFin");
+    }
+    
     
     public String[] customCSVSplit(String input) {
         List<String> fields = new ArrayList<>();
@@ -36,26 +48,23 @@ public class DeveloperPublisherMapper extends MapReduceBase implements Mapper<Lo
         return fields.toArray(new String[0]);
     }
     
-    private int parseSales(String sales) {
-        String[] parts = sales.split("-");
-        if (parts.length == 2) {
-            try {
-                int lower = Integer.parseInt(parts[0].trim());
-                int upper = Integer.parseInt(parts[1].trim());
-                return (lower + upper) / 2;
-            } catch (NumberFormatException e) {
-                // Manejar errores de conversión si es necesario.
-            }
-        }
-        // Valor predeterminado si no se puede analizar la entrada.
-        return 0;
-    }
-    
     
     @Override
     public void map(LongWritable key, Text value, OutputCollector<Text, Text> output, Reporter reporter) throws IOException {
         // Parse the input record into genre and price (assuming a CSV format).
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String[] parts = customCSVSplit(value.toString());
+        Date fechaInicio = null;
+        Date fechaFin = null;
+
+        try {
+            fechaInicio = dateFormat.parse(fechainit); // Fecha de inicio
+            fechaFin = dateFormat.parse(fechafin);    // Fecha de fin
+        } catch (ParseException e) {
+            // Manejo de errores al analizar las fechas
+            e.printStackTrace();
+            return;
+        }
         if (parts.length > 20) {
             String priceString = parts[6].trim();
             if (!priceString.equals("Price")) {
@@ -67,32 +76,24 @@ public class DeveloperPublisherMapper extends MapReduceBase implements Mapper<Lo
                     if (metacriticScore == 0) {
                         return; // Skip games with a Metacritic score of 0
                     }
-                    double priceValue = Double.parseDouble(priceString);
-                    int sales = parseSales(parts[3].trim());
-                    double numDLCs = Double.parseDouble(parts[7].trim());
-                    String[] developers = parts[24].split(",");
-                    for (String developer : developers) {
-                        developer = developer.trim();
-                        if (!developer.isEmpty()) {
-                            String gameInfoValue = metacritic + "\t" + priceValue + "\t" + sales + "\t" + numDLCs;
-                            gameInfo.set(gameInfoValue);
-
-                            // Emit developer
-                            output.collect(new Text("Developer: " + developer), gameInfo);
-                        }
-                    }
                     
-                    // Emitir publisher
-                    String[] publishers = parts[25].split(",");
-                    for (String publisher : publishers) {
-                        publisher = publisher.trim();
-                        if (!publisher.isEmpty()) {
-                            String gameInfoValue = metacritic + "\t" + priceValue + "\t" + sales + "\t" + numDLCs;
-                            gameInfo.set(gameInfoValue);
+                    String date = parts[2];
+                    
+                    try {
+                        
+                        if (date != null && !date.isEmpty()) {
+                            Date gameDate = dateFormat.parse(date);
 
-                            // Emit publisher
-                            output.collect(new Text("Publisher: " + publisher), gameInfo);
+                            if (gameDate != null) {
+                                // Verifica si la fecha del juego está dentro del rango deseado
+                                if (gameDate.after(fechaInicio) && gameDate.before(fechaFin)) {
+                                    output.collect(new Text(date), value);
+                                }
+                            }
                         }
+                    } catch (ParseException e) {
+                                // Manejo de errores al analizar la fecha del juego
+                                e.printStackTrace();
                     }
                 } catch (NumberFormatException e) {
                     // Handle any parsing errors if the "price" column doesn't contain a valid double.
@@ -101,4 +102,4 @@ public class DeveloperPublisherMapper extends MapReduceBase implements Mapper<Lo
             }
         }
     }
-}    
+}

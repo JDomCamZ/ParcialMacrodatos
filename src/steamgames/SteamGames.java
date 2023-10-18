@@ -37,6 +37,9 @@ public class SteamGames {
              case "dates":
                  datebigmap(args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
                  break;
+             case "litdates":
+                 littledates(args[1], args[2], args[3], args[4], args[5]);
+                 break;    
              case "test":
                  test(args[1], args[2]);
                  break;
@@ -46,6 +49,9 @@ public class SteamGames {
                  break;
              case "os":
                  Availability(args[0], args[1]);
+                 break;
+             case "minage":
+                 MinAge(args[1], args[2]);
                  break;
  /*           case "minmax":
                 // Lógica para la segunda consulta
@@ -270,6 +276,44 @@ public class SteamGames {
         }
     }
 
+    static void littledates(String input, String output, String fechainit, String fechafin, String owners) {
+        JobClient my_client = new JobClient();
+        // Create a configuration object for the job
+        JobConf job_conf = new JobConf(SteamGames.class);
+
+        // Set a name of the Job
+        job_conf.setJobName("DateBigMap");
+        job_conf.set("fechaInicio", fechainit);
+        job_conf.set("fechaFin", fechafin);
+        job_conf.set("ownerMin", owners);
+
+        // Specify data type of output key and value
+        job_conf.setOutputKeyClass(Text.class);
+        job_conf.setOutputValueClass(Text.class);
+
+        // Specify names of Mapper and Reducer Class
+        job_conf.setMapperClass(steamgames.GenreCategoryClassifierUnifiedMapper.class);
+        job_conf.setReducerClass(steamgames.GenreCategoryClassifierUnifiedReducer.class);
+
+        // Specify formats of the data type of Input and output
+        job_conf.setInputFormat(TextInputFormat.class);
+        job_conf.setOutputFormat(TextOutputFormat.class);
+
+        // Set input and output directories using command line arguments,
+        //arg[0] = name of input directory on HDFS, and arg[1] =  name of output directory to be created to store the output file.
+
+        FileInputFormat.setInputPaths(job_conf, new Path(input));
+        FileOutputFormat.setOutputPath(job_conf, new Path(output));
+
+        my_client.setConf(job_conf);
+        try {
+            // Run the job
+            JobClient.runJob(job_conf);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
     static void test(String input, String output) {
         JobClient my_client = new JobClient();
         // Create a configuration object for the job
@@ -387,6 +431,41 @@ public class SteamGames {
         // Specify names of Mapper and Reducer Class
         job_conf.setMapperClass(steamgames.OwnersByGenreMapper.class);
         job_conf.setReducerClass(steamgames.OwnersByGenreReducer.class);
+
+        // Specify formats of the data type of Input and output
+        job_conf.setInputFormat(TextInputFormat.class);
+        job_conf.setOutputFormat(TextOutputFormat.class);
+
+        // Set input and output directories using command line arguments,
+        //arg[0] = name of input directory on HDFS, and arg[1] =  name of output directory to be created to store the output file.
+
+        FileInputFormat.setInputPaths(job_conf, new Path(input));
+        FileOutputFormat.setOutputPath(job_conf, new Path(output));
+
+        my_client.setConf(job_conf);
+        try {
+            // Run the job
+            JobClient.runJob(job_conf);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    static void MinAge(String input, String output) {
+        JobClient my_client = new JobClient();
+        // Create a configuration object for the job
+        JobConf job_conf = new JobConf(SteamGames.class);
+
+        // Set a name of the Job
+        job_conf.setJobName("MinAge");
+
+        // Specify data type of output key and value
+        job_conf.setOutputKeyClass(Text.class);
+        job_conf.setOutputValueClass(Text.class);
+
+        // Specify names of Mapper and Reducer Class
+        job_conf.setMapperClass(steamgames.MinAgeMapper.class);
+        job_conf.setReducerClass(steamgames.MinAgeReducer.class);
 
         // Specify formats of the data type of Input and output
         job_conf.setInputFormat(TextInputFormat.class);

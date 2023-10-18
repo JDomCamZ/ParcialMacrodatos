@@ -62,8 +62,7 @@ public class TopGamesPerYearMapper extends MapReduceBase implements Mapper<LongW
             String gener=fields[29];
             String gameInfo = name + "," + Score + "," + owner + "," + price + "," + gener;
             // Emite (año, información del juego)
-            key.set(year);
-            if(year>0)output.collect(new Text(""+key), new Text(gameInfo));
+            if(year>0)output.collect(new Text(""+year), new Text(gameInfo));
            }
                
             } catch (NumberFormatException e) {

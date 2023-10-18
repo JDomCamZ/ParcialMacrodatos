@@ -197,7 +197,7 @@ public class SteamGames {
 
         // Specify names of Mapper and Reducer Class
         job_conf.setMapperClass(steamgames.OwnersByGenreMapper.class);
-        job_conf.setReducerClass(steamgames.OwnersByReducer.class);
+        job_conf.setReducerClass(steamgames.OwnersByGenreReducer.class);
 
         // Specify formats of the data type of Input and output
         job_conf.setInputFormat(TextInputFormat.class);
@@ -231,7 +231,7 @@ public class SteamGames {
 
         // Specify names of Mapper and Reducer Class
         job_conf.setMapperClass(steamgames.OwnersByGenreMapper.class);
-        job_conf.setReducerClass(steamgames.OwnersByReducer.class);
+        job_conf.setReducerClass(steamgames.OwnersByGenreReducer.class);
 
         // Specify formats of the data type of Input and output
         job_conf.setInputFormat(TextInputFormat.class);

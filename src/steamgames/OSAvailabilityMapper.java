@@ -46,9 +46,9 @@ public class OSAvailabilityMapper extends MapReduceBase implements Mapper<LongWr
             
             try {
                 // Extract the game name, genres, and estimated owners
-            String Windows = fields[11];
-            String Mac = fields[12];
-            String Linuex = fields[13];
+            String Windows = fields[10];
+            String Mac = fields[11];
+            String Linuex = fields[12];
 
             // Emit each genre along with the game name and estimated owners
             

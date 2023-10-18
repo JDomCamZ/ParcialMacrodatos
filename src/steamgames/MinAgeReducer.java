@@ -31,7 +31,7 @@ public class MinAgeReducer extends MapReduceBase implements Reducer<Text, Text, 
             double averagePlayTime = totalPlayTime / count;
             double averageMetacriticScore = totalMetacriticScore / count;
             
-            output.collect(key, new Text("Total de Ventas: " + totalSales + "," + "Tiempo Medio Jugado: " + averagePlayTime + "," + "Promedio de Puntuacion: " + averageMetacriticScore));
+            output.collect(key, new Text(String.format("Total de Ventas: %d  Tiempo Medio Jugado: %.2f Promedio de Puntuacion: %.2f", totalSales, averagePlayTime, averageMetacriticScore)));
         }
     }
 }

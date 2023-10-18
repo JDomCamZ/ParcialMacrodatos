@@ -18,12 +18,7 @@ import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.Reducer;
 import org.apache.hadoop.mapred.Reporter;
 
-/**
- *
- * @author User
- */
-public class GenreCategoryClassifierReducer extends MapReduceBase implements Reducer<Text, Text, Text, Text> {
-    
+public class GenreCategoryClassifierUnifiedReducer extends MapReduceBase implements Reducer<Text, Text, Text, Text> {
     @Override
     public void reduce(Text key, Iterator<Text> values, OutputCollector<Text, Text> output, Reporter reporter) throws IOException {
         double positiveSum = 0.0;
@@ -41,7 +36,7 @@ public class GenreCategoryClassifierReducer extends MapReduceBase implements Red
 
         while (values.hasNext()) {
             Text value = values.next();
-            String[] fields = value.toString().split("\t");
+            String[] fields = customCSVSplit(value.toString());
             double positive = Double.parseDouble(fields[4]);
             double negative = Double.parseDouble(fields[5]);
             String subtitleLanguages = fields[1];
@@ -57,6 +52,7 @@ public class GenreCategoryClassifierReducer extends MapReduceBase implements Red
             if (!audioLanguages.trim().equals("[]")) {
                 updateLanguageCounts(audioLangCounts, audioLanguages);
             }
+
             // Calcular la disponibilidad
             if (availableOn.contains("Windows")) {
                 windowsCount++;
@@ -69,7 +65,7 @@ public class GenreCategoryClassifierReducer extends MapReduceBase implements Red
             }
 
             double ratio = positive / negative;
-            
+
             // Actualizar los juegos mejor y peor valorados
             if (ratio > maxPositiveRating) {
                 maxPositiveRating = ratio;
@@ -106,6 +102,29 @@ public class GenreCategoryClassifierReducer extends MapReduceBase implements Red
         output.collect(key, new Text(outputValue));
     }
 
+    public String[] customCSVSplit(String input) {
+        List<String> fields = new ArrayList<>();
+        StringBuilder currentField = new StringBuilder();
+        boolean insideQuotes = false;
+
+        for (char c : input.toCharArray()) {
+            if (c == '"') {
+                insideQuotes = !insideQuotes;
+            } else if (c == ',' && !insideQuotes) {
+                // Si no estamos dentro de comillas, terminamos un campo.
+                fields.add(currentField.toString());
+                currentField.setLength(0);
+            } else {
+                currentField.append(c);
+            }
+        }
+
+        // Asegúrate de agregar el último campo.
+        fields.add(currentField.toString());
+
+        return fields.toArray(new String[0]);
+    }
+    
     // Función para actualizar el recuento de idiomas
     private void updateLanguageCounts(Map<String, Integer> langCounts, String languages) {
         String[] langArray = languages.split(",");
@@ -123,4 +142,5 @@ public class GenreCategoryClassifierReducer extends MapReduceBase implements Red
             .map(Map.Entry::getKey)
             .collect(Collectors.toList());
     }
+    
 }

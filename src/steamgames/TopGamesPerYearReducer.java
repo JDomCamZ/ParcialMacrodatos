@@ -19,7 +19,7 @@ public class TopGamesPerYearReducer  extends MapReduceBase implements Reducer<Te
     
     public void reduce(Text key, Iterator<Text> values, OutputCollector<Text, Text> output, Reporter reporter) throws IOException {
 
-        double maxScore = Double.MIN_VALUE;
+        double maxScore = 0;
         String bestGameInfo = "";
         
          try {

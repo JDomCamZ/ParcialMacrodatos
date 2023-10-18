@@ -21,10 +21,10 @@ public class OSAvailabilityReducer extends MapReduceBase implements Reducer<Text
     public void reduce(Text key, Iterator<Text> values, OutputCollector<Text, Text> output, Reporter reporter) throws IOException {
 
         String mostSoldGame = "";
-        long total = Long.MIN_VALUE;
-        long availabilityWindow=Long.MIN_VALUE;
-        long availabilityLinux=Long.MIN_VALUE;
-        long availabilityMac= Long.MIN_VALUE;
+        long total =0;
+        long availabilityWindow=0;
+        long availabilityLinux=0;
+        long availabilityMac= 0;
          try {
             while (values.hasNext()) {
             String[] parts = values.next().toString().split(",");

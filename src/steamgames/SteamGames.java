@@ -50,7 +50,7 @@ public class SteamGames {
                  Availability(args[1], args[2]);
                  break;
              case "top":
-                 Availability(args[1], args[2]);
+                 TopGame(args[1], args[2]);
                  break;
              case "gameinfo1":                                                            //ejem:     Wargame Single-player 20.00
                  FindGamesInfo1MR( args[1],args[2], args[3],args[4],args[5]);//args[3], args[4],args[5]=tag, categoría y precio mínimo
